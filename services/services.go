@@ -1,6 +1,8 @@
 package service
 
-import database "github.com/eron97/inject.git/repository"
+import (
+	database "github.com/eron97/inject.git/repository"
+)
 
 type DomainService interface {
 	CreateUserServices()
@@ -17,5 +19,4 @@ func NewDomainService(
 }
 
 func (uds *useDomainService) CreateUserServices() {
-	// Implemente a lógica para criar um usuário nos serviços aqui
 }

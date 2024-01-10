@@ -9,6 +9,6 @@ func InitRoutes(
 	r *gin.RouterGroup,
 	controller controllers.ControllerInterface) {
 
-	r.POST("/createUser", func(c *gin.Context) {})
+	r.POST("/createUser", controller.CreateUser)
 
 }

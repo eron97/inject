@@ -24,5 +24,7 @@ func NewControllerInterface(
 }
 
 func (uci *useControllerInterface) CreateUser(c *gin.Context) {
-	c.JSON(http.StatusOK, "CreateUser do controller chamado com sucesso!")
+	uci.service.CreateUserServices()
+
+	c.JSON(http.StatusOK, gin.H{"message": "Usuário criado com sucesso!"})
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
 	connectiondb "github.com/eron97/inject.git/connectiondb"
@@ -11,9 +12,14 @@ import (
 	"github.com/eron97/inject.git/routes"
 	service "github.com/eron97/inject.git/services"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Erro ao carregar o arquivo .env")
+	}
 
 	cfg := connectiondb.Config{
 		User:     os.Getenv("DB_USER"),

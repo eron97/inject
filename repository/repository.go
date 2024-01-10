@@ -11,41 +11,18 @@ func NewDatabase(database *sql.DB) Database {
 }
 
 type Database interface {
-	CreateUser()
+	CreateUser() error
+	ReadlAllUsers() error
 }
 
 type useDatabase struct {
 	databaseConnection *sql.DB
 }
 
-func (ur *useDatabase) CreateUser() {
-	// Implemente a lógica para criar um usuário no banco de dados aqui
+func (ur *useDatabase) CreateUser() error {
+	return nil
 }
 
-/*
-
-package repository
-
-import "go.mongodb.org/mongo-driver/mongo"
-
-func NewUserRepository(database *mongo.Database) UserRepository {
-	return &userRepository{
-		database,
-	}
+func (ur *useDatabase) ReadlAllUsers() error {
+	return nil
 }
-
-type UserRepository interface {
-	CreateUser()
-}
-
-type userRepository struct {
-	databaseConnection *mongo.Database
-}
-
-func (ur *userRepository) CreateUser() {
-	// Implemente a lógica para criar um usuário no banco de dados aqui
-}
-
-
-
-*/
