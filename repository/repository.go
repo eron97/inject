@@ -1,8 +1,10 @@
-package database
+package repository
 
-import "go.mongodb.org/mongo-driver/mongo"
+import (
+	"database/sql"
+)
 
-func NewDatabase(database *mongo.Database) Database {
+func NewDatabase(database *sql.DB) Database {
 	return &useDatabase{
 		database,
 	}
@@ -13,7 +15,7 @@ type Database interface {
 }
 
 type useDatabase struct {
-	databaseConnection *mongo.Database
+	databaseConnection *sql.DB
 }
 
 func (ur *useDatabase) CreateUser() {

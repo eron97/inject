@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"net/http"
+
 	service "github.com/eron97/inject.git/services"
 	"github.com/gin-gonic/gin"
 )
@@ -22,5 +24,5 @@ func NewControllerInterface(
 }
 
 func (uci *useControllerInterface) CreateUser(c *gin.Context) {
-	// Implemente a lógica para criar um usuário no controlador aqui
+	c.JSON(http.StatusOK, "CreateUser do controller chamado com sucesso!")
 }
