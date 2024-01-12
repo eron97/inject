@@ -22,10 +22,10 @@ type ErrorUnmarshal struct {
 }
 
 type CausesUnmarshal struct {
-	Email    string
-	Password string
-	Name     string
-	Age      string
+	First_Name string
+	Last_Name  string
+	Email      string
+	Pass       string
 }
 
 /*
@@ -91,10 +91,10 @@ func NewForbiddenError(message string) *ErrorMessages {
 
 func NewUnmarshalError(message string) *ErrorUnmarshal {
 	var causes = CausesUnmarshal{
-		Email:    "Type string",
-		Password: "Type string",
-		Name:     "Type string",
-		Age:      "Type int8 (age < 128)",
+		First_Name: "Type string",
+		Last_Name:  "Type string",
+		Email:      "Type string",
+		Pass:       "Type int8 (age < 128)",
 	}
 
 	return &ErrorUnmarshal{
