@@ -7,11 +7,12 @@ import (
 
 	"github.com/eron97/inject.git/models"
 	database "github.com/eron97/inject.git/repository"
+	"github.com/eron97/inject.git/services/password"
 	"github.com/gin-gonic/gin"
 )
 
 type DomainService interface {
-	CreateUser(c *gin.Context) error
+	CreateUser(request models.CreateUser) string
 	ReadUser(c *gin.Context) (models.GetUserID, error)
 	ReadAllUsers(c *gin.Context) ([]models.GetUser, error)
 	DeleteUser(c *gin.Context) error
@@ -27,19 +28,49 @@ func NewDomainService(
 	return &useDomainService{db}
 }
 
-func (uds *useDomainService) CreateUser(c *gin.Context) error {
-	var user models.CreateUser
+func (service *useDomainService) CreateUser(request models.CreateUser) string {
 
-	if err := c.BindJSON(&user); err != nil {
-		return fmt.Errorf("Erro ao realizar o binding do JSON: %s", err.Error())
+	emailExists, err := service.userRepository.VerificEmailExist(request.Email)
+	if err != nil {
+		return "Erro ao verificar a existência do e-mail"
 	}
 
-	if err := uds.userRepository.CreateUser([]models.CreateUser{user}); err != nil {
-		return fmt.Errorf("Erro ao criar o usuário no repositório: %s", err.Error())
+	if !emailExists {
+		newPassword, err := password.HashPassword(request.Password)
+		if err != nil {
+			return "Erro ao criptografar a senha"
+		}
+
+		request.Password = newPassword
+
+		err = service.userRepository.CreateUser([]models.CreateUser{request})
+		if err == nil {
+			return "Usuário criado com sucesso!"
+		} else {
+			return "Erro ao criar usuário no banco de dados"
+		}
 	}
 
-	return nil
+	return "E-mail já existe e está associado a outra conta"
 }
+
+/*
+func (service *useDomainService) CreateUser(request models.CreateUser) string {
+	if emailExists, err := service.userRepository.VerificEmailExist(request.Email); err == nil && !emailExists {
+		if newPassword, err := password.HashPassword(request.Password); err == nil {
+			request.Email = newPassword
+			return "Senha criptografada com sucesso!"
+		}
+	}
+
+	err := service.userRepository.CreateUser([]models.CreateUser{request})
+	if err == nil {
+		return "Usuário criado com sucesso!"
+	} else {
+		return "Erro ao criar usuário no banco de dados"
+	}
+}
+*/
 
 func (uds *useDomainService) ReadUser(c *gin.Context) (models.GetUserID, error) {
 	userID := c.Param("id")

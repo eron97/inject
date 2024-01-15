@@ -25,7 +25,7 @@ type CausesUnmarshal struct {
 	First_Name string
 	Last_Name  string
 	Email      string
-	Pass       string
+	Password   string
 }
 
 /*
@@ -94,7 +94,7 @@ func NewUnmarshalError(message string) *ErrorUnmarshal {
 		First_Name: "Type string",
 		Last_Name:  "Type string",
 		Email:      "Type string",
-		Pass:       "Type int8 (age < 128)",
+		Password:   "Type int8 (age < 128)",
 	}
 
 	return &ErrorUnmarshal{

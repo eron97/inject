@@ -3,6 +3,8 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/eron97/inject.git/config/validate"
+	"github.com/eron97/inject.git/models"
 	service "github.com/eron97/inject.git/services"
 	"github.com/gin-gonic/gin"
 )
@@ -26,9 +28,17 @@ func NewControllerInterface(
 	}
 }
 
-func (pkg *useControllerInterface) CreateUser(c *gin.Context) {
+func (controller *useControllerInterface) CreateUser(c *gin.Context) {
+	var request models.CreateUser
 
-	c.JSON(http.StatusOK, gin.H{"message": "Usuário criado com sucesso"})
+	err := validate.ValidateRequest(c, &request)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Erro de validação"})
+		return
+	}
+
+	resp := controller.service.CreateUser(request)
+	c.JSON(http.StatusOK, gin.H{"message": resp})
 }
 
 func (pkg *useControllerInterface) ReadlAllUsers(c *gin.Context) {

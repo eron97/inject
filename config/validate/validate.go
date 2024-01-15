@@ -1,6 +1,7 @@
 package validate
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/eron97/inject.git/config/error_messages"
@@ -14,9 +15,8 @@ import (
 )
 
 var (
-	RequestOk models.CreateUser
-	Validate  = validator.New()
-	transl    ut.Translator
+	Validate = validator.New()
+	transl   ut.Translator
 )
 
 func init() {
@@ -28,10 +28,8 @@ func init() {
 	}
 }
 
-func ValidateRequest(c *gin.Context) {
-
-	if err := c.ShouldBindJSON(&RequestOk); err != nil {
-
+func ValidateRequest(c *gin.Context, request *models.CreateUser) error {
+	if err := c.ShouldBindJSON(request); err != nil {
 		if ve, ok := err.(validator.ValidationErrors); ok {
 			errorMessage := error_messages.NewBadRequestError("Erro de validação")
 
@@ -44,18 +42,15 @@ func ValidateRequest(c *gin.Context) {
 			}
 
 			c.JSON(http.StatusBadRequest, gin.H{"Erro de validação": errorMessage})
-			c.Abort()
-			return
+			return errors.New(errorMessage.Message)
 		}
 
 		errorMessage := error_messages.NewUnmarshalError("Campos preenchidos não correspondem aos tipos atribuídos")
 		c.JSON(http.StatusBadRequest, errorMessage)
-		c.Abort()
-		return
+		return errors.New(errorMessage.Message)
 	}
 
-	c.Set("createUserRequest", &RequestOk)
-	c.Next()
+	return nil
 }
 
 /*

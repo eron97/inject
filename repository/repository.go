@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
+	"errors"
 	"log"
 
 	"github.com/eron97/inject.git/models"
@@ -16,7 +16,7 @@ func NewDatabase(database *sql.DB) Database {
 
 type Database interface {
 	CreateUser(users []models.CreateUser) error
-	CreateVerificEmail(email string) (bool, error)
+	VerificEmailExist(email string) (bool, error)
 	ReadUser(userID int) (models.GetUserID, error)
 	ReadAllUsers() ([]models.GetUser, error)
 	DeleteUser(userID int) error
@@ -26,22 +26,17 @@ type useDatabase struct {
 	databaseConnection *sql.DB
 }
 
-func (con *useDatabase) CreateVerificEmail(email string) (bool, error) {
+func (con *useDatabase) VerificEmailExist(email string) (bool, error) {
 	var count int
 
 	query := "SELECT COUNT(*) FROM users WHERE email = ?"
 	row := con.databaseConnection.QueryRow(query, email)
 
 	if err := row.Scan(&count); err != nil {
-		// Ocorreu um erro ao escanear o resultado da query
-		return false, fmt.Errorf("erro ao verificar email: %v", err)
+		return false, errors.New(err.Error())
 	}
 
-	if count != 0 {
-		return true, nil
-	}
-
-	return false, nil
+	return (count != 0), nil
 }
 
 func (con *useDatabase) CreateUser(users []models.CreateUser) error {
